@@ -1,0 +1,10 @@
+# OS or IDE generated files
+__pycache__/
+*.py[cod]
+*.swp
+
+# Environment file - Keep your secrets out of version control
+.env
+
+# Datasets (You might want to reconsider this depending on dataset size)
+headlines.txt
