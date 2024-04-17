@@ -15,6 +15,7 @@ A Reddit headline collection project for generating catchy AI headlines.
 
 **Steps**
 1. **Create a `.env` file with the following:**
+
 CLIENT_ID=your_reddit_client_id
 CLIENT_SECRET=your_reddit_client_secret
 
