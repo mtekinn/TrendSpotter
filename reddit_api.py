@@ -4,8 +4,10 @@ import time
 from dotenv import load_dotenv, set_key
 
 load_dotenv()
+access_token = os.getenv('ACCESS_TOKEN')
+access_token_expires = int(os.getenv('ACCESS_TOKEN_EXPIRES', 0)) # Ensure a default value of 0
 
-# Get the client_id and client_secret from the .env file
+# get the client_id and client_secret from the .env file
 client_id = os.getenv('CLIENT_ID')
 client_secret = os.getenv('CLIENT_SECRET')
 
@@ -15,18 +17,24 @@ def get_access_token():
         'grant_type': 'client_credentials'
     }
     auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
-
     response = requests.post(auth_url, data=data, headers={'User-Agent': 'MyHeadlineGeneratorApp/0.1'}, auth=auth)
 
-    if response.status_code == 200:
-        token_data = response.json()
-        access_token = token_data['access_token']
-        expires_in = token_data['expires_in']
+    current_time = int(time.time())
 
-        load_dotenv()
-        set_key('.env', 'ACCESS_TOKEN', access_token)
+    if not access_token or current_time >= access_token_expires:
+        # get a new access token
+        if response.status_code == 200:
+            token_data = response.json()
+            access_token = token_data['access_token']
+            expires_in = token_data['expires_in']
 
-        return access_token
+            load_dotenv()
+            set_key('.env', 'ACCESS_TOKEN', access_token)
+            set_key('.env', 'ACCESS_TOKEN_EXPIRES', str(current_time + expires_in))
+
+            return access_token
+        else:
+            print("Error fetching access token:", response.status_code)
+            return None
     else:
-        print("Error getting access token", response.json())
-        return None
+        return access_token
