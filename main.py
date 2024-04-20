@@ -3,6 +3,7 @@ import requests
 from dotenv import load_dotenv
 from reddit_api import get_access_token 
 from data_utils import load_headlines, save_headlines
+from data_utils import clean_headline
 
 # Logic to ensure we have an access token (using get_access_token)
 load_dotenv()
@@ -31,7 +32,7 @@ if response.status_code == 200:
 
     for post in data['data']['children']:
         title = post['data']['title']
-        title = title.replace('&amp;', '&').replace('&nbsp;', ' ')
+        clean_title = clean_headline(title)
         new_headlines.append(title)
 
     save_headlines(new_headlines)

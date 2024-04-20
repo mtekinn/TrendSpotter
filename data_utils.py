@@ -1,4 +1,5 @@
 import os
+import re
 
 def load_headlines():
     existing_headlines = set()
@@ -16,3 +17,13 @@ def save_headlines(headlines):
         headlines = set(headlines)  # Ensure uniqueness in case we call this repeatedly
         for title in headlines:
             file.write(title + '\n') 
+
+
+def clean_headline(text):
+    text = text.strip()
+    text = re.sub(r'\s+', ' ', text)  # Replace multiple spaces with a single space
+    text = re.sub(r'http\S+', '', text) # Remove URLs
+    text = re.sub(r'\S+@\S+', '', text) # email address
+    text = re.sub(r'\d{10}', '', text) # phone number
+
+    return text
