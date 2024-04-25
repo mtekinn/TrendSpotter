@@ -1,5 +1,6 @@
 import os
 import re
+import nltk
 
 def load_headlines():
     existing_headlines = set()
@@ -25,5 +26,14 @@ def clean_headline(text):
     text = re.sub(r'http\S+', '', text) # Remove URLs
     text = re.sub(r'\S+@\S+', '', text) # email address
     text = re.sub(r'\d{10}', '', text) # phone number
+    text = re.sub(r'[^\w\s]', '', text)  # Remove remaining special characters
+
+    # Stop word removal
+    stop_words = set(nltk.corpus.stopwords.words('english'))
+    text = ' '.join([word for word in text.split() if word not in stop_words])
 
     return text
+
+def remove_duplicates(headlines):
+    """Removes exact duplicates headlines"""
+    # ... Implementation to check for duplicates and return a unique list
